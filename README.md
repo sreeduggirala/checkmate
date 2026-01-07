@@ -1,6 +1,51 @@
-# DualAgent - Dual-Agent Coding Assistant MVP
+# Checkmate - Dual-Agent Coding Assistant MVP
 
 A VSCode extension that uses two LLM agents (Builder and Reviewer) to implement code changes with built-in quality checks.
+
+## What is Checkmate?
+
+Checkmate is an AI-powered code assistant that brings the software engineering practice of **peer review** directly into your development workflow. Instead of relying on a single AI agent that might introduce bugs or overlook edge cases, Checkmate uses two specialized agents that work together:
+
+- **The Builder Agent**: Implements your requested changes with surgical precision, focusing on minimal diffs, test-first development, and conservative dependency management.
+- **The Reviewer Agent**: Acts as a paranoid quality gate, scrutinizing the Builder's work for edge cases, security vulnerabilities, test coverage gaps, and potential bugs.
+
+### How It Works
+
+When you make a coding request, Checkmate orchestrates an automated review cycle:
+
+1. The Builder generates a patch (code changes) along with tests
+2. The system applies the patch and runs your test suite
+3. If tests fail, the Builder gets another chance to fix the issues
+4. If tests pass, the Reviewer examines the implementation for quality, security, and correctness
+5. The cycle continues until the Reviewer approves or a maximum iteration limit is reached
+
+This event-driven process includes sophisticated features like:
+- **Arbiter Mode**: Forces concrete test demonstrations when agents disagree
+- **Diagnostic Mode**: Runs additional commands when the Reviewer needs more information
+- **Oscillation Detection**: Stops infinite loops when agents can't reach consensus
+- **Optional Moderator**: A third agent that can break ties in disagreements
+
+### Why Checkmate?
+
+Traditional single-agent coding assistants can be helpful, but they often:
+- Miss edge cases and error handling
+- Introduce security vulnerabilities
+- Write incomplete tests
+- Make unnecessary changes beyond what was requested
+
+Checkmate's dual-agent architecture creates natural tension between implementation speed and code quality, resulting in:
+- More robust, production-ready code
+- Comprehensive test coverage
+- Built-in security review
+- Focused, minimal changes that don't over-engineer solutions
+
+### Who Is It For?
+
+Checkmate is ideal for developers who want AI assistance without sacrificing code quality. It's particularly useful for:
+- Teams that value code review and quality standards
+- Projects where bugs in production are costly
+- Developers learning best practices through AI-generated examples
+- Anyone who wants an extra pair of (AI) eyes on their code
 
 ## Architecture
 
