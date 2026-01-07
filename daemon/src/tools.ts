@@ -1,7 +1,76 @@
 import * as fs from 'fs';
 import * as path from 'path';
-import { execa } from 'execa';
+import { spawn } from 'child_process';
 import simpleGit, { SimpleGit } from 'simple-git';
+
+type ProcessResult = {
+  stdout: string;
+  stderr: string;
+  exitCode: number;
+};
+
+const runProcess = (
+  command: string,
+  args: string[],
+  options: { cwd: string }
+): Promise<ProcessResult> =>
+  new Promise((resolve, reject) => {
+    const child = spawn(command, args, { cwd: options.cwd });
+    let stdout = '';
+    let stderr = '';
+
+    child.stdout?.on('data', chunk => {
+      stdout += chunk.toString();
+    });
+    child.stderr?.on('data', chunk => {
+      stderr += chunk.toString();
+    });
+
+    child.on('error', err => {
+      reject(err);
+    });
+    child.on('close', code => {
+      resolve({ stdout, stderr, exitCode: code ?? 0 });
+    });
+  });
+
+const normalizePath = (value: string): string => value.replace(/\\/g, '/');
+
+const globToRegExp = (pattern: string): RegExp => {
+  let regex = '^';
+  for (let i = 0; i < pattern.length; i += 1) {
+    const char = pattern[i];
+    if (char === '*') {
+      if (pattern[i + 1] === '*') {
+        while (pattern[i + 1] === '*') {
+          i += 1;
+        }
+        if (pattern[i + 1] === '/') {
+          i += 1;
+          regex += '(?:.*/)?';
+        } else {
+          regex += '.*';
+        }
+      } else {
+        regex += '[^/]*';
+      }
+      continue;
+    }
+
+    if (char === '?') {
+      regex += '[^/]';
+      continue;
+    }
+
+    if (/[.+^${}()|[\]\\]/.test(char)) {
+      regex += `\\${char}`;
+    } else {
+      regex += char;
+    }
+  }
+  regex += '$';
+  return new RegExp(regex);
+};
 
 export class WorkspaceTools {
   private git: SimpleGit;
@@ -14,11 +83,22 @@ export class WorkspaceTools {
    * Check if a path is allowed by the allowlist
    */
   private isPathAllowed(filePath: string): boolean {
-    const normalized = path.normalize(filePath);
+    const normalized = normalizePath(filePath);
     return this.allowPaths.some(allowed => {
-      const allowedPattern = allowed.replace(/\*/g, '.*');
-      const regex = new RegExp(`^${allowedPattern}$`);
-      return regex.test(normalized) || normalized.startsWith(allowed);
+      const allowedNormalized = normalizePath(allowed);
+      if (allowedNormalized.includes('*')) {
+        const regex = globToRegExp(allowedNormalized);
+        return regex.test(normalized);
+      }
+
+      if (normalized === allowedNormalized) {
+        return true;
+      }
+
+      const withSlash = allowedNormalized.endsWith('/')
+        ? allowedNormalized
+        : `${allowedNormalized}/`;
+      return normalized.startsWith(withSlash);
     });
   }
 
@@ -159,25 +239,33 @@ export class WorkspaceTools {
       return { success: false, error: validation.error };
     }
 
+    const tempPatchFile = path.join(this.workspaceRoot, '.dualagent-temp.patch');
     try {
       // Write patch to temp file
-      const tempPatchFile = path.join(this.workspaceRoot, '.dualagent-temp.patch');
       fs.writeFileSync(tempPatchFile, patch);
 
       // Apply patch using git apply
-      await execa('git', ['apply', '--whitespace=nowarn', tempPatchFile], {
+      const result = await runProcess('git', ['apply', '--whitespace=nowarn', tempPatchFile], {
         cwd: this.workspaceRoot,
       });
 
-      // Clean up temp file
-      fs.unlinkSync(tempPatchFile);
+      if (result.exitCode !== 0) {
+        return {
+          success: false,
+          error: `Failed to apply patch: ${result.stderr || result.stdout || 'Unknown error'}`,
+        };
+      }
 
       return { success: true };
     } catch (err: any) {
       return {
         success: false,
-        error: `Failed to apply patch: ${err.stderr || err.message}`,
+        error: `Failed to apply patch: ${err.message}`,
       };
+    } finally {
+      if (fs.existsSync(tempPatchFile)) {
+        fs.unlinkSync(tempPatchFile);
+      }
     }
   }
 
@@ -189,10 +277,8 @@ export class WorkspaceTools {
     args: string[] = []
   ): Promise<{ stdout: string; stderr: string; exitCode: number }> {
     try {
-      const result = await execa(command, args, {
+      const result = await runProcess(command, args, {
         cwd: this.workspaceRoot,
-        reject: false,
-        all: true,
       });
 
       return {

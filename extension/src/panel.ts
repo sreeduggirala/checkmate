@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import WebSocket from 'ws';
-import { ClientMessage, OrchestratorEvent } from '@dualagent/shared';
+import { ClientMessage, OrchestratorEvent } from '@checkmate/shared';
 
 export class DualAgentPanel {
   public static currentPanel: DualAgentPanel | undefined;
@@ -104,7 +104,28 @@ export class DualAgentPanel {
         this._addMessage('tests', testMsg);
         break;
       case 'review_ready':
-        const reviewMsg = `Blockers: ${event.review.blockers.length}\n${event.review.blockers.map((b) => `- ${b}`).join('\n')}\n\nNon-blocking: ${event.review.non_blocking.length}\n${event.review.non_blocking.map((n) => `- ${n}`).join('\n')}\n\nTest gaps: ${event.review.test_gaps.length}\n${event.review.test_gaps.map((t) => `- ${t}`).join('\n')}`;
+        const issues = event.review.issues;
+        const issueLines =
+          issues.length === 0
+            ? 'None'
+            : issues
+                .map((issue) => {
+                  const verify = issue.how_to_verify ? ` (verify: ${issue.how_to_verify})` : '';
+                  return `- [${issue.severity}] ${issue.description}${verify}`;
+                })
+                .join('\n');
+        const extraTests =
+          event.review.extra_tests && event.review.extra_tests.length > 0
+            ? event.review.extra_tests.map((test) => `- ${test}`).join('\n')
+            : 'None';
+        const diagnostics =
+          event.review.diagnostics_needed && event.review.diagnostics_needed.length > 0
+            ? event.review.diagnostics_needed.map((cmd) => `- ${cmd}`).join('\n')
+            : 'None';
+        const suggestedPatch = event.review.suggested_patch
+          ? `\n\nSuggested patch:\n${event.review.suggested_patch}`
+          : '';
+        const reviewMsg = `Verdict: ${event.review.verdict}\nIssues (${issues.length}):\n${issueLines}\n\nExtra tests:\n${extraTests}\n\nDiagnostics needed:\n${diagnostics}\n\nStopping: ${event.review.stopping}${suggestedPatch}`;
         this._addMessage('review', reviewMsg);
         break;
       case 'cycle_complete':

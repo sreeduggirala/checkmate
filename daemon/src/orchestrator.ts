@@ -1,4 +1,4 @@
-import { Config, BuilderMessage, BuilderMessageSchema, Review, Issue, OrchestratorEvent, ReviewSchema, ModeratorDecision, ModeratorDecisionSchema, ArbiterTestResult } from '@dualagent/shared';
+import { Config, BuilderMessage, BuilderMessageSchema, Review, Issue, OrchestratorEvent, ReviewSchema, ModeratorDecision, ModeratorDecisionSchema, ArbiterTestResult } from '@checkmate/shared';
 import { WorkspaceTools } from './tools';
 import { LLMProvider, createProvider } from './llm-providers';
 import { getApiKey } from './config';
@@ -33,7 +33,7 @@ You must respond with valid JSON only, no markdown, no fences. The JSON must hav
     "Step 2: Next step",
     "Step 3: Final step"
   ],
-  "patch": "unified diff here",
+  "patch": ["diff line 1", "diff line 2", "diff line 3"],
   "tests": [
     "Test case 1 added/updated",
     "Test case 2 added/updated"
@@ -49,7 +49,7 @@ RULES:
 1. If you need to read files before implementing, respond with ONLY {"files_needed": ["path1", "path2"]}
 2. Otherwise, provide ALL required fields: plan, patch, tests, run, risks
 3. PLAN: Bulleted list of what you'll implement (be specific and minimal)
-4. PATCH: Valid unified diff format (no markdown fences). Keep diffs small and focused.
+4. PATCH: Provide an array of strings, one per diff line. Keep diffs small and focused.
 5. TESTS: List which test cases you added or updated. Tests should prove the fix works.
 6. RUN: Commands that should be executed to verify (usually test command)
 7. RISKS: What might still be wrong, edge cases, potential issues. Be honest about limitations.
@@ -69,7 +69,27 @@ Example response when implementing:
     "Add test that fails without the fix",
     "Verify test passes with the fix"
   ],
-  "patch": "--- a/src/validator.ts\\n+++ b/src/validator.ts\\n@@ -5,6 +5,9 @@\\n export function validate(input: string): boolean {\\n+  if (input === null || input === undefined) {\\n+    throw new Error('Input cannot be null or undefined');\\n+  }\\n   return input.trim().length > 0;\\n }\\n--- a/test/validator.test.ts\\n+++ b/test/validator.test.ts\\n@@ -15,0 +16,8 @@\\n+  it('should throw error for null input', () => {\\n+    expect(() => validate(null)).toThrow('Input cannot be null or undefined');\\n+  });\\n+\\n+  it('should throw error for undefined input', () => {\\n+    expect(() => validate(undefined)).toThrow('Input cannot be null or undefined');\\n+  });",
+  "patch": [
+    "--- a/src/validator.ts",
+    "+++ b/src/validator.ts",
+    "@@ -5,6 +5,9 @@",
+    " export function validate(input: string): boolean {",
+    "+  if (input === null || input === undefined) {",
+    "+    throw new Error('Input cannot be null or undefined');",
+    "+  }",
+    "   return input.trim().length > 0;",
+    " }",
+    "--- a/test/validator.test.ts",
+    "+++ b/test/validator.test.ts",
+    "@@ -15,0 +16,8 @@",
+    "+  it('should throw error for null input', () => {",
+    "+    expect(() => validate(null)).toThrow('Input cannot be null or undefined');",
+    "+  });",
+    "+",
+    "+  it('should throw error for undefined input', () => {",
+    "+    expect(() => validate(undefined)).toThrow('Input cannot be null or undefined');",
+    "+  });"
+  ],
   "tests": [
     "Added test for null input (should throw)",
     "Added test for undefined input (should throw)"
@@ -437,19 +457,24 @@ Be honest: if you cannot reproduce the bug, your test will pass and prove the re
     );
 
     const builderMessage = this.parseJSON<BuilderMessage>(builderResponse, BuilderMessageSchema);
-    if (!builderMessage || !builderMessage.patch) {
+    const patchText = builderMessage?.patch
+      ? Array.isArray(builderMessage.patch)
+        ? builderMessage.patch.join('\n')
+        : builderMessage.patch
+      : undefined;
+    if (!builderMessage || !patchText) {
       this.emit({ type: 'error', error: 'Builder failed to provide arbiter test' });
       return 'failed';
     }
 
     // Apply the test patch
-    const validation = this.tools.validatePatch(builderMessage.patch);
+    const validation = this.tools.validatePatch(patchText);
     if (!validation.valid) {
       this.emit({ type: 'error', error: `Invalid arbiter test patch: ${validation.error}` });
       return 'failed';
     }
 
-    const applyResult = await this.tools.applyPatch(builderMessage.patch);
+    const applyResult = await this.tools.applyPatch(patchText);
     if (!applyResult.success) {
       this.emit({ type: 'error', error: `Failed to apply arbiter test: ${applyResult.error}` });
       return 'failed';
@@ -466,7 +491,7 @@ Be honest: if you cannot reproduce the bug, your test will pass and prove the re
 
       const arbiterResult: ArbiterTestResult = {
         test_added: true,
-        test_patch: builderMessage.patch,
+        test_patch: patchText,
         test_passed: testResult.exitCode === 0,
         outcome,
         explanation: testResult.exitCode === 0
@@ -702,6 +727,12 @@ Stderr: ${lastTestOutput.stderr}`);
         return;
       }
 
+      const patchText = builderMessage.patch
+        ? Array.isArray(builderMessage.patch)
+          ? builderMessage.patch.join('\n')
+          : builderMessage.patch
+        : undefined;
+
       this.builderMessages.push(builderMessage);
 
       // Handle file requests
@@ -717,12 +748,12 @@ Stderr: ${lastTestOutput.stderr}`);
         continue; // Re-run builder with updated shared state
       }
 
-      if (!builderMessage.patch) {
+      if (!patchText) {
         this.emit({ type: 'error', error: 'Builder did not provide a patch' });
         return;
       }
 
-      lastPatch = builderMessage.patch;
+      lastPatch = patchText;
       this.emit({ type: 'patch_ready', patch: lastPatch });
 
       // Check for oscillation BEFORE applying patch

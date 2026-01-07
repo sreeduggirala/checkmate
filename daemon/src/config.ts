@@ -1,6 +1,6 @@
 import * as fs from 'fs';
 import * as path from 'path';
-import { Config, ConfigSchema } from '@dualagent/shared';
+import { Config, ConfigSchema } from '@checkmate/shared';
 
 export function loadConfig(workspaceRoot: string): Config {
   const configPath = path.join(workspaceRoot, '.dualagent.json');

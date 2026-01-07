@@ -1,7 +1,7 @@
 import WebSocket, { WebSocketServer } from 'ws';
-import { ClientMessageSchema, OrchestratorEvent } from '@dualagent/shared';
+import { ClientMessageSchema, OrchestratorEvent } from '@checkmate/shared';
 import { Orchestrator } from './orchestrator';
-import { Config } from '@dualagent/shared';
+import { Config } from '@checkmate/shared';
 
 export class DaemonServer {
   private wss: WebSocketServer;

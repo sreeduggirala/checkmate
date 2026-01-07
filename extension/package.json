@@ -1,7 +1,7 @@
 {
-  "name": "dualagent",
-  "displayName": "DualAgent",
-  "description": "Dual-agent coding assistant with Builder and Reviewer",
+  "name": "checkmate",
+  "displayName": "Checkmate",
+  "description": "AI coding assistant with dual-agent architecture (Builder and Reviewer)",
   "version": "0.1.0",
   "publisher": "dualagent",
   "engines": {
@@ -15,8 +15,8 @@
   "contributes": {
     "commands": [
       {
-        "command": "dualagent.openPanel",
-        "title": "DualAgent: Open Panel"
+        "command": "checkmate.openPanel",
+        "title": "Checkmate: Open Panel"
       }
     ]
   },
@@ -26,7 +26,7 @@
     "package": "vsce package"
   },
   "dependencies": {
-    "@dualagent/shared": "*",
+    "@checkmate/shared": "*",
     "ws": "^8.16.0"
   },
   "devDependencies": {

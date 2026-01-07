@@ -49,7 +49,7 @@ export type SharedState = z.infer<typeof SharedStateSchema>;
 export const BuilderMessageSchema = z.object({
   files_needed: z.array(z.string()).optional(), // If builder needs to read files first
   plan: z.array(z.string()).optional(), // Bulleted list of what will be done
-  patch: z.string().optional(), // Unified diff or file edits
+  patch: z.union([z.string(), z.array(z.string())]).optional(), // Unified diff or file edits
   tests: z.array(z.string()).optional(), // Tests added or updated
   run: z.array(z.string()).optional(), // Commands to execute
   risks: z.array(z.string()).optional(), // What might still be wrong

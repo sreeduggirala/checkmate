@@ -1,9 +1,13 @@
 import * as path from 'path';
+import * as dotenv from 'dotenv';
 import { DaemonServer } from './server';
 import { loadConfig } from './config';
 
 const DEFAULT_PORT = 9876;
 const workspaceRoot = process.env.WORKSPACE_ROOT || process.cwd();
+
+// Load .env file from workspace root
+dotenv.config({ path: path.join(workspaceRoot, '.env') });
 
 async function main() {
   console.log('=== DualAgent Daemon ===');
