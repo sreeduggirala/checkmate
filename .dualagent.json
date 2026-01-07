@@ -1,0 +1,15 @@
+{
+  "builder_provider": "openai",
+  "builder_model": "gpt-4-turbo-preview",
+  "reviewer_provider": "anthropic",
+  "reviewer_model": "claude-3-opus-20240229",
+  "test_command": "npm test",
+  "allow_paths": [
+    "src/**/*.ts",
+    "src/**/*.js",
+    "test/**/*.ts",
+    "test/**/*.test.js",
+    "example/**/*"
+  ],
+  "max_iterations": 3
+}

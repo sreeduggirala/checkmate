@@ -1,0 +1,39 @@
+{
+  "name": "dualagent",
+  "displayName": "DualAgent",
+  "description": "Dual-agent coding assistant with Builder and Reviewer",
+  "version": "0.1.0",
+  "publisher": "dualagent",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [],
+  "main": "./dist/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "dualagent.openPanel",
+        "title": "DualAgent: Open Panel"
+      }
+    ]
+  },
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc --watch",
+    "package": "vsce package"
+  },
+  "dependencies": {
+    "@dualagent/shared": "*",
+    "ws": "^8.16.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "@types/vscode": "^1.85.0",
+    "@types/ws": "^8.5.10",
+    "typescript": "^5.3.3",
+    "@vscode/vsce": "^2.22.0"
+  }
+}

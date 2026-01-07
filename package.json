@@ -1,0 +1,21 @@
+{
+  "name": "dual-agent-workspace",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Dual-agent coding assistant MVP",
+  "workspaces": [
+    "extension",
+    "daemon",
+    "shared"
+  ],
+  "scripts": {
+    "build": "npm run build --workspaces",
+    "daemon": "npm run start -w daemon",
+    "test": "npm run test --workspaces --if-present",
+    "watch": "npm run watch --workspaces --if-present"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "typescript": "^5.3.3"
+  }
+}

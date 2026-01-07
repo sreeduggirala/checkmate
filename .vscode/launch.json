@@ -1,0 +1,30 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Run Extension",
+      "type": "extensionHost",
+      "request": "launch",
+      "args": [
+        "--extensionDevelopmentPath=${workspaceFolder}/extension"
+      ],
+      "outFiles": [
+        "${workspaceFolder}/extension/dist/**/*.js"
+      ],
+      "preLaunchTask": "npm: build - extension"
+    },
+    {
+      "name": "Debug Daemon",
+      "type": "node",
+      "request": "launch",
+      "program": "${workspaceFolder}/daemon/dist/index.js",
+      "outFiles": [
+        "${workspaceFolder}/daemon/dist/**/*.js"
+      ],
+      "preLaunchTask": "npm: build - daemon",
+      "env": {
+        "WORKSPACE_ROOT": "${workspaceFolder}/example"
+      }
+    }
+  ]
+}
