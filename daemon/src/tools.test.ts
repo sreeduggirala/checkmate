@@ -9,7 +9,7 @@ describe('WorkspaceTools', () => {
 
   beforeEach(() => {
     // Create temp directory for tests
-    tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'dualagent-test-'));
+    tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'checkmate-test-'));
     tools = new WorkspaceTools(tempDir, ['src/**/*.ts', 'test/**/*.ts']);
   });
 
@@ -35,7 +35,7 @@ describe('WorkspaceTools', () => {
       const patch = `--- a/config/secret.ts
 +++ b/config/secret.ts
 @@ -1,0 +2,1 @@
-+const apiKey = 'secret';`;
++const secret = 'example';`;
 
       const result = tools.validatePatch(patch);
       expect(result.valid).toBe(false);

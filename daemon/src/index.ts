@@ -1,12 +1,24 @@
 import * as path from 'path';
+import * as dotenv from 'dotenv';
 import { DaemonServer } from './server';
 import { loadConfig } from './config';
 
-const DEFAULT_PORT = 9876;
+// Load .env file - try multiple locations
+// Priority: repo root > workspace root > current directory
+const repoRoot = path.resolve(__dirname, '../..');
 const workspaceRoot = process.env.WORKSPACE_ROOT || process.cwd();
 
+// Load from repo root first (most common location)
+const repoEnvResult = dotenv.config({ path: path.join(repoRoot, '.env') });
+// Load from workspace root
+const workspaceEnvResult = dotenv.config({ path: path.join(workspaceRoot, '.env') });
+// Fallback to current directory
+dotenv.config();
+
+const DEFAULT_PORT = 9876;
+
 async function main() {
-  console.log('=== DualAgent Daemon ===');
+  console.log('=== Checkmate Daemon ===');
   console.log(`Workspace: ${workspaceRoot}`);
 
   // Load config

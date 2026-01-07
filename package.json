@@ -1,8 +1,8 @@
 {
-  "name": "dual-agent-workspace",
+  "name": "checkmate-workspace",
   "version": "0.1.0",
   "private": true,
-  "description": "Dual-agent coding assistant MVP",
+  "description": "Checkmate - AI coding assistant with dual-agent architecture",
   "workspaces": [
     "extension",
     "daemon",

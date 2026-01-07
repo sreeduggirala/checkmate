@@ -256,7 +256,7 @@ The result: Clean, focused implementations with robust error handling and compre
 1. **Clone and install dependencies:**
 
 ```bash
-cd brooklyn
+cd checkmate
 npm install
 ```
 
@@ -270,15 +270,15 @@ npm run build
 
 ```bash
 # For OpenAI
-export OPENAI_API_KEY="sk-..."
+export OPENAI_API_KEY="your-openai-api-key-here"
 
 # For Anthropic
-export ANTHROPIC_API_KEY="sk-ant-..."
+export ANTHROPIC_API_KEY="your-anthropic-api-key-here"
 ```
 
 4. **Create workspace config:**
 
-Create `.dualagent.json` in your workspace root:
+Create `.checkmate.json` in your workspace root:
 
 **Basic configuration:**
 ```json
@@ -362,7 +362,7 @@ WORKSPACE_ROOT=/path/to/your/project npm run daemon
 ```
 
 The daemon will:
-1. Load `.dualagent.json` from workspace root
+1. Load `.checkmate.json` from workspace root
 2. Validate API keys
 3. Start WebSocket server on `ws://localhost:9876`
 
@@ -372,7 +372,7 @@ The daemon will:
 
 1. Open the `extension` folder in VSCode
 2. Press `F5` to launch Extension Development Host
-3. In the new window, run command: `DualAgent: Open Panel`
+3. In the new window, run command: `Checkmate: Open Panel`
 
 **Option 2: Package and Install**
 
@@ -380,7 +380,7 @@ The daemon will:
 cd extension
 npm install -g @vscode/vsce
 vsce package
-code --install-extension dualagent-0.1.0.vsix
+code --install-extension checkmate-0.1.0.vsix
 ```
 
 ## Usage
@@ -390,14 +390,14 @@ code --install-extension dualagent-0.1.0.vsix
 1. **Start the daemon** in your workspace:
    ```bash
    cd /path/to/your/project
-   npm run daemon  # from dualagent repo
+   npm run daemon  # from checkmate repo
    ```
 
 2. **Open VSCode** in your project workspace
 
-3. **Open DualAgent Panel**:
+3. **Open Checkmate Panel**:
    - Command Palette (`Cmd+Shift+P` / `Ctrl+Shift+P`)
-   - Type: `DualAgent: Open Panel`
+   - Type: `Checkmate: Open Panel`
 
 4. **Enter a request** in the input field:
    - Example: "Add a function to validate email addresses with tests"
@@ -498,13 +498,13 @@ Tests cover:
 
 ### "Config file not found"
 
-Create `.dualagent.json` in your workspace root (where you run the daemon).
+Create `.checkmate.json` in your workspace root (where you run the daemon).
 
 ### "Missing OPENAI_API_KEY"
 
 Export the required API key before starting daemon:
 ```bash
-export OPENAI_API_KEY="sk-..."
+export OPENAI_API_KEY="your-openai-api-key-here"
 ```
 
 ### "WebSocket error: ECONNREFUSED"
@@ -518,7 +518,7 @@ Check it's listening on `ws://localhost:9876`.
 
 ### "Path is not in allowlist"
 
-Update `.dualagent.json` to include the file paths you want to modify:
+Update `.checkmate.json` to include the file paths you want to modify:
 ```json
 {
   "allow_paths": ["src/**/*", "lib/**/*"]
@@ -536,7 +536,7 @@ Update `.dualagent.json` to include the file paths you want to modify:
 ### Project Structure
 
 ```
-brooklyn/
+checkmate/
 ├── shared/          # Shared types (Zod schemas)
 │   └── src/
 │       ├── types.ts

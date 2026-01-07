@@ -2,7 +2,7 @@
 
 set -e
 
-echo "=== DualAgent Setup ==="
+echo "=== Checkmate Setup ==="
 echo ""
 
 # Check Node.js
@@ -41,14 +41,14 @@ echo "✅ Setup complete!"
 echo ""
 echo "Next steps:"
 echo "1. Set environment variables:"
-echo "   export OPENAI_API_KEY='sk-...'"
-echo "   export ANTHROPIC_API_KEY='sk-ant-...'"
+echo "   export OPENAI_API_KEY='your-openai-api-key-here'"
+echo "   export ANTHROPIC_API_KEY='your-anthropic-api-key-here'"
 echo ""
-echo "2. Create .dualagent.json in your workspace (example provided in repo root)"
+echo "2. Create .checkmate.json in your workspace (example provided in repo root)"
 echo ""
 echo "3. Start the daemon:"
 echo "   npm run daemon"
 echo ""
-echo "4. Open VSCode and run command: 'DualAgent: Open Panel'"
+echo "4. Open VSCode and run command: 'Checkmate: Open Panel'"
 echo ""
 echo "See README.md for detailed instructions."

@@ -1,14 +1,14 @@
 import * as vscode from 'vscode';
-import { DualAgentPanel } from './panel';
+import { CheckmatePanel } from './panel';
 
 const DEFAULT_WS_URL = 'ws://localhost:9876';
 
 export function activate(context: vscode.ExtensionContext) {
-  console.log('DualAgent extension activated');
+  console.log('Checkmate extension activated');
 
-  const command = vscode.commands.registerCommand('dualagent.openPanel', () => {
-    const wsUrl = process.env.DUALAGENT_WS_URL || DEFAULT_WS_URL;
-    DualAgentPanel.createOrShow(context.extensionUri, wsUrl);
+  const command = vscode.commands.registerCommand('checkmate.openPanel', () => {
+    const wsUrl = process.env.CHECKMATE_WS_URL || DEFAULT_WS_URL;
+    CheckmatePanel.createOrShow(context.extensionUri, wsUrl);
   });
 
   context.subscriptions.push(command);

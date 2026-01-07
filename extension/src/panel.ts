@@ -1,9 +1,9 @@
 import * as vscode from 'vscode';
 import WebSocket from 'ws';
-import { ClientMessage, OrchestratorEvent } from '@dualagent/shared';
+import { ClientMessage, OrchestratorEvent } from '@checkmate/shared';
 
-export class DualAgentPanel {
-  public static currentPanel: DualAgentPanel | undefined;
+export class CheckmatePanel {
+  public static currentPanel: CheckmatePanel | undefined;
   private readonly _panel: vscode.WebviewPanel;
   private _disposables: vscode.Disposable[] = [];
   private ws: WebSocket | null = null;
@@ -41,22 +41,22 @@ export class DualAgentPanel {
       : undefined;
 
     // If panel exists, show it
-    if (DualAgentPanel.currentPanel) {
-      DualAgentPanel.currentPanel._panel.reveal(column);
+    if (CheckmatePanel.currentPanel) {
+      CheckmatePanel.currentPanel._panel.reveal(column);
       return;
     }
 
     // Create new panel
     const panel = vscode.window.createWebviewPanel(
-      'dualagent',
-      'DualAgent',
+      'checkmate',
+      'Checkmate',
       column || vscode.ViewColumn.One,
       {
         enableScripts: true,
       }
     );
 
-    DualAgentPanel.currentPanel = new DualAgentPanel(panel, extensionUri, wsUrl);
+    CheckmatePanel.currentPanel = new CheckmatePanel(panel, extensionUri, wsUrl);
   }
 
   private _connectToDaemon() {
@@ -104,7 +104,10 @@ export class DualAgentPanel {
         this._addMessage('tests', testMsg);
         break;
       case 'review_ready':
-        const reviewMsg = `Blockers: ${event.review.blockers.length}\n${event.review.blockers.map((b) => `- ${b}`).join('\n')}\n\nNon-blocking: ${event.review.non_blocking.length}\n${event.review.non_blocking.map((n) => `- ${n}`).join('\n')}\n\nTest gaps: ${event.review.test_gaps.length}\n${event.review.test_gaps.map((t) => `- ${t}`).join('\n')}`;
+        const criticalIssues = event.review.issues.filter(i => i.severity === 'critical');
+        const majorIssues = event.review.issues.filter(i => i.severity === 'major');
+        const minorIssues = event.review.issues.filter(i => i.severity === 'minor');
+        const reviewMsg = `Verdict: ${event.review.verdict}\n\nCritical Issues: ${criticalIssues.length}\n${criticalIssues.map((i) => `- ${i.description}`).join('\n')}\n\nMajor Issues: ${majorIssues.length}\n${majorIssues.map((i) => `- ${i.description}`).join('\n')}\n\nMinor Issues: ${minorIssues.length}\n${minorIssues.map((i) => `- ${i.description}`).join('\n')}\n\n${event.review.extra_tests && event.review.extra_tests.length > 0 ? `\nSuggested Tests:\n${event.review.extra_tests.map((t) => `- ${t}`).join('\n')}` : ''}\n\n${event.review.stopping ? `Reasoning: ${event.review.stopping}` : ''}`;
         this._addMessage('review', reviewMsg);
         break;
       case 'cycle_complete':
@@ -168,7 +171,7 @@ export class DualAgentPanel {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DualAgent</title>
+    <title>Checkmate</title>
     <style>
         body {
             padding: 10px;
@@ -326,7 +329,7 @@ export class DualAgentPanel {
   }
 
   public dispose() {
-    DualAgentPanel.currentPanel = undefined;
+    CheckmatePanel.currentPanel = undefined;
 
     if (this.ws) {
       this.ws.close();

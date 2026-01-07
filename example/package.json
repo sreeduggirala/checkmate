@@ -1,7 +1,7 @@
 {
-  "name": "dualagent-example",
+  "name": "checkmate-example",
   "version": "1.0.0",
-  "description": "Example project for DualAgent",
+  "description": "Example project for Checkmate",
   "scripts": {
     "test": "jest"
   },
@@ -10,5 +10,8 @@
     "jest": "^29.7.0",
     "ts-jest": "^29.1.1",
     "typescript": "^5.3.3"
+  },
+  "dependencies": {
+    "ws": "^8.19.0"
   }
 }

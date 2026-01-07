@@ -1,9 +1,9 @@
-import { Config, BuilderMessage, BuilderMessageSchema, Review, Issue, OrchestratorEvent, ReviewSchema, ModeratorDecision, ModeratorDecisionSchema, ArbiterTestResult } from '@dualagent/shared';
+import { Config, BuilderMessage, BuilderMessageSchema, Review, Issue, OrchestratorEvent, ReviewSchema, ModeratorDecision, ModeratorDecisionSchema, ArbiterTestResult } from '@checkmate/shared';
 import { WorkspaceTools } from './tools';
 import { LLMProvider, createProvider } from './llm-providers';
 import { getApiKey } from './config';
 
-const BUILDER_SYSTEM_PROMPT = `You are a Builder agent in a dual-agent coding system. Your job is to implement user requests.
+const BUILDER_SYSTEM_PROMPT = `You are a Builder agent in a Checkmate coding system. Your job is to implement user requests.
 
 YOUR PERSONALITY AND APPROACH:
 You are MINIMAL, CONSERVATIVE, and TEST-FIRST. Quality over speed.
@@ -81,7 +81,7 @@ Example response when implementing:
   ]
 }`;
 
-const REVIEWER_SYSTEM_PROMPT = `You are a Reviewer agent in a dual-agent coding system. Your job is to review implementations for quality, correctness, and test coverage.
+const REVIEWER_SYSTEM_PROMPT = `You are a Reviewer agent in a Checkmate coding system. Your job is to review implementations for quality, correctness, and test coverage.
 
 YOUR PERSONALITY AND APPROACH:
 You are PARANOID, STRICT, and PEDANTIC. This is intentional and valuable.
@@ -217,7 +217,7 @@ Example response:
   "stopping": "Continue - critical security vulnerability and null check must be fixed before approval"
 }`;
 
-const MODERATOR_SYSTEM_PROMPT = `You are a Moderator agent in a dual-agent coding system. Your job is to resolve disagreements between Builder and Reviewer agents when they cannot reach consensus.
+const MODERATOR_SYSTEM_PROMPT = `You are a Moderator agent in a Checkmate coding system. Your job is to resolve disagreements between Builder and Reviewer agents when they cannot reach consensus.
 
 CRITICAL OUTPUT FORMAT:
 You must respond with valid JSON only, no markdown, no fences. The JSON must have this exact structure:

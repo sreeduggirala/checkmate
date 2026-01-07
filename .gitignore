@@ -4,4 +4,5 @@ dist/
 .DS_Store
 *.vsix
 .vscode-test/
-.dualagent-temp.patch
+.checkmate-temp.patch
+.env

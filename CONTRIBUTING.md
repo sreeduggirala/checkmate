@@ -1,11 +1,11 @@
-# Contributing to DualAgent
+# Contributing to Checkmate
 
 ## Development Setup
 
 1. **Clone the repository:**
 ```bash
 git clone <repo-url>
-cd brooklyn
+cd checkmate
 ```
 
 2. **Install dependencies:**
@@ -59,13 +59,13 @@ npm run dev
 **Option 1: Development Host**
 1. Open `extension/` folder in VSCode
 2. Press `F5` to launch Extension Development Host
-3. In the new window, run: `DualAgent: Open Panel`
+3. In the new window, run: `Checkmate: Open Panel`
 
 **Option 2: Package and Install**
 ```bash
 cd extension
 vsce package
-code --install-extension dualagent-0.1.0.vsix
+code --install-extension checkmate-0.1.0.vsix
 ```
 
 ## Testing
@@ -223,7 +223,7 @@ Check Debug Console in VSCode.
 ## Issue Reporting
 
 Include:
-- DualAgent version
+- Checkmate version
 - VSCode version
 - Node.js version
 - Steps to reproduce

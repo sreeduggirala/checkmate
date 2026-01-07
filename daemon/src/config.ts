@@ -1,13 +1,13 @@
 import * as fs from 'fs';
 import * as path from 'path';
-import { Config, ConfigSchema } from '@dualagent/shared';
+import { Config, ConfigSchema } from '@checkmate/shared';
 
 export function loadConfig(workspaceRoot: string): Config {
-  const configPath = path.join(workspaceRoot, '.dualagent.json');
+  const configPath = path.join(workspaceRoot, '.checkmate.json');
 
   if (!fs.existsSync(configPath)) {
     throw new Error(
-      `Config file not found at ${configPath}. Please create .dualagent.json in workspace root.`
+      `Config file not found at ${configPath}. Please create .checkmate.json in workspace root.`
     );
   }
 

@@ -161,7 +161,7 @@ export class WorkspaceTools {
 
     try {
       // Write patch to temp file
-      const tempPatchFile = path.join(this.workspaceRoot, '.dualagent-temp.patch');
+      const tempPatchFile = path.join(this.workspaceRoot, '.checkmate-temp.patch');
       fs.writeFileSync(tempPatchFile, patch);
 
       // Apply patch using git apply

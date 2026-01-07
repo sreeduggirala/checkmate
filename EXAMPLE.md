@@ -1,6 +1,6 @@
-# DualAgent Example Walkthrough
+# Checkmate Example Walkthrough
 
-This guide walks through a complete example of using DualAgent to add a new feature.
+This guide walks through a complete example of using Checkmate to add a new feature.
 
 ## Scenario
 
@@ -18,8 +18,8 @@ npm run build
 2. **Set API keys:**
 
 ```bash
-export OPENAI_API_KEY="sk-..."
-export ANTHROPIC_API_KEY="sk-ant-..."
+export OPENAI_API_KEY="your-openai-api-key-here"
+export ANTHROPIC_API_KEY="your-anthropic-api-key-here"
 ```
 
 3. **Start the daemon:**
@@ -30,8 +30,8 @@ npm run daemon
 
 You should see:
 ```
-=== DualAgent Daemon ===
-Workspace: /path/to/brooklyn
+=== Checkmate Daemon ===
+Workspace: /path/to/checkmate
 Config loaded: builder=openai/gpt-4-turbo-preview, reviewer=anthropic/claude-3-opus-20240229
 Daemon listening on ws://localhost:9876
 
@@ -40,13 +40,13 @@ Ready! Connect VSCode extension to: ws://localhost:9876
 
 4. **Open VSCode:**
 
-- Open the `brooklyn` folder in VSCode
+- Open the `checkmate` folder in VSCode
 - Press F5 if running in development mode, or use the installed extension
-- Run command: `DualAgent: Open Panel`
+- Run command: `Checkmate: Open Panel`
 
 ## Example Request
 
-In the DualAgent panel input field, enter:
+In the Checkmate panel input field, enter:
 
 ```
 Add a multiply function to example/src/calculator.ts that takes two numbers and returns their product. Include proper TypeScript types and comprehensive tests in example/test/calculator.test.ts. Handle edge cases like multiplying by zero.
