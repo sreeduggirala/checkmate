@@ -1,4 +1,4 @@
-# Checkmate - Dual-Agent Coding Assistant MVP
+# Checkmate - Dual-Agent Coding Assistant
 
 A VSCode extension that uses two LLM agents (Builder and Reviewer) to implement code changes with built-in quality checks.
 
